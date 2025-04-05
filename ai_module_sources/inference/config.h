@@ -7,15 +7,17 @@
 #define MODEL_SCALE 0.0039216
 #define MODEL_MEAN 0.0
 #define MODEL_CLASS_CNT 3
-#define MODEL_THRESH 0.5
-#define MODEL_NMS_THRESH 0.6
+#define MODEL_THRESH 0.7
+#define MODEL_NMS_THRESH 0.7
 
 #define CENTER_COLOR cv::Scalar(200, 100, 30)
 
-cv::Scalar color_map[4] = {cv::Scalar(255, 0, 0),
-                           cv::Scalar(0, 255, 0), cv::Scalar(0, 0, 255),
-                           cv::Scalar(100, 100, 100)};
-
+// 0 - яблоко зелёное
+// 1 - яблоко красное
+// 2 - помидор
+cv::Scalar color_map[3] = {cv::Scalar(0, 255, 0),
+                           cv::Scalar(0, 0, 0),
+                           cv::Scalar(0, 0, 255)};
 
 // Calibrated via checkerboard
 cv::Mat camera_matrix = (cv::Mat_<double>(3, 3) << 727.97277723, 0, 308.83841529,
