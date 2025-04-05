@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>  // Библиотека для работы с адресной светодиодной лентой
 
 /********************************************************
  *  КОНСТАНТЫ И ПАРАМЕТРЫ
@@ -7,9 +8,17 @@
 // Определение количества «секторов» (равномерно делим 360° на 12 частей).
 #define NUM_SECTORS 12
 
+// Настройки адресной светодиодной ленты
+#define LED_PIN 17                       // Пин, к которому подключена лента
+#define LED_COUNT NUM_SECTORS            // По одному светодиоду на каждый сектор
+#define LED_TYPE (NEO_GRB + NEO_KHZ800)  // Тип светодиодов (формат данных и частота)
+
+// Создаём объект для управления лентой
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, LED_TYPE);
+
 // Параметры UART для лидара (ESP32-специфичный Serial1)
-#define LIDAR_RX_PIN 19
-#define LIDAR_TX_PIN 18
+#define LIDAR_RX_PIN 18
+#define LIDAR_TX_PIN 19
 #define BAUDRATE 115200
 
 // UART2 - передача данных в следующий микроконтроллер
@@ -252,14 +261,57 @@ bool parseAndProcessPacket() {
     }
   }
 
-  //10) (от макса: это 12ый пункт изначально) (Опционально) выводим отладочную информацию через Serial
-  Serial.print("RPM=");
-  Serial.print(rpm);
-  Serial.print("  sectorDistances: ");
+  // 10) Раскраска светодиодов в зависимости от дистанции и/или «залипания»
   for (int s = 0; s < NUM_SECTORS; s++) {
-    Serial.print(sectorDistances[s]);
-    Serial.print(", ");
+    float dist = sectorDistances[s];
+    uint32_t color;
+
+    if (dist == NO_VALUE) {
+      // Если нет данных, сделаем (для примера) зелёный.
+      // Если нужно выключать, то заменить на strip.Color(0, 0, 0).
+      color = strip.Color(0, 255, 0);
+    } else {
+      // Смотрим, не активен ли режим «залипания» красного
+      if (millis() < sectorAlarmUntil[s]) {
+        // Держим красный цвет
+        color = strip.Color(255, 0, 0);
+      } else {
+        // Обычная логика: <WARNING_DIST = жёлтый, иначе зелёный
+        if (dist < WARNING_DIST) {
+          color = strip.Color(255, 255, 0);  // Жёлтый
+        } else {
+          color = strip.Color(0, 255, 0);  // Зелёный
+        }
+      }
+    }
+    strip.setPixelColor(s, color);
   }
+
+  // 11) Отправляем данные на ленту
+  strip.show();
+
+  //12) (Опционально) выводим отладочную информацию через Serial
+  // Serial.print("RPM=");
+  // Serial.print(rpm);
+  // Serial.print("  sectorDistances: ");
+  // for (int s = 0; s < NUM_SECTORS; s++) {
+  //   Serial.print(sectorDistances[s]);
+  //   Serial.print(", ");
+  // }
+  // Serial.println();
+  // 13) Передаем статусы секторов по UART в виде строки
+  //     "SECTORS: 0 1 2 ..." (0=зелёный, 1=жёлтый, 2=красный)
+  Serial.print("SECTORS: ");
+  for (int s = 0; s < NUM_SECTORS; s++) {
+    int sectorStatus;
+    int dist = sectorDistances[s];
+
+    Serial.print(dist);
+    if (s < (NUM_SECTORS - 1)) {
+      Serial.print(" ");
+    }
+  }
+  Serial.println();
 
   return true;  // Пакет успешно обработан
 }
@@ -274,10 +326,39 @@ void setup() {
   // Инициализация Serial2 для передачи
   UART2.begin(BAUDRATE, SERIAL_8N1, UART_RX_PIN, UART_TX_PIN);
 
+  strip.begin();
+  strip.show();             // Сразу гасим/обновляем ленту
+  strip.setBrightness(50);  // При необходимости настроить яркость [0..255]
+
   Serial.println("ESP32 Lidar parser.");
 }
 
 void loop() {
   // В основном цикле просто пытаемся считать и обработать пакет
   parseAndProcessPacket();
+
+  static unsigned long lastSendMillis = 0;
+  if (millis() - lastSendMillis >= STATUS_PRINT_INTERVAL) {
+    lastSendMillis = millis();
+
+    UART2.print("SECTORS: ");
+    for (int s = 0; s < NUM_SECTORS; s++) {
+      int sectorStatus;
+      float dist = sectorDistances[s];
+
+      if (dist == NO_VALUE) {
+        sectorStatus = 0;
+      } else if (millis() < sectorAlarmUntil[s]) {
+        sectorStatus = 2;
+      } else if (dist < WARNING_DIST) {
+        sectorStatus = 1;
+      } else {
+        sectorStatus = 0;
+      }
+
+      UART2.print(sectorStatus);
+      if (s < (NUM_SECTORS - 1)) UART2.print(",");
+    }
+    UART2.println();
+  }
 }
