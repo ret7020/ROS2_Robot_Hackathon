@@ -42,10 +42,17 @@ class PoseFollower(Node):
 
         # Коэффициенты «П»-регулятора
         self.linear_k = 1.0
+<<<<<<< HEAD
         self.angular_k = 4.0
 
         # Порог «прибыли» к цели
         self.arrival_tolerance = 10.0
+=======
+        self.angular_k = 1.0
+
+        # Порог «прибыли» к цели
+        self.arrival_tolerance = 1.0
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
 
         # Флаги состояния
         self.reached = False
@@ -60,12 +67,20 @@ class PoseFollower(Node):
 
     def set_goal(self, msg: Float64MultiArray):
         """Задать новую цель и сбросить состояние."""
+<<<<<<< HEAD
         #self.current_pose = msg
+=======
+        self.current_pose = msg
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
         
         self.x_goal = msg.data[0]
         self.y_goal = msg.data[1]
         
+<<<<<<< HEAD
         #self.get_logger().info(f"{self.x_goal}")
+=======
+        self.get_logger().info(f"{self.x_goal}")
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
 
         self.reached = False
         self.unreachable = False
@@ -77,7 +92,11 @@ class PoseFollower(Node):
     def pose_callback(self, msag: Float64MultiArray):
         """Сохранить текущую позу черепашки."""
         self.current_pose = msag
+<<<<<<< HEAD
         #self.get_logger().info(f"{msag}")
+=======
+        self.get_logger().info(f"{msag}")
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
     def control_loop(self):
         """
         Вызывается таймером каждые 0.1 сек.
@@ -88,6 +107,7 @@ class PoseFollower(Node):
             return
 
         # Вычисляем расстояние до цели
+<<<<<<< HEAD
         dx = self.x_goal - self.current_pose.data[0]
         dy = self.y_goal - self.current_pose.data[1]
         distance = math.sqrt(dx*dx + dy*dy)
@@ -95,6 +115,15 @@ class PoseFollower(Node):
         # Проверяем, достигли ли мы цели
         if distance < self.arrival_tolerance:
             #self.get_logger().info(f"{distance}")
+=======
+        dx = self.x_goal - 500.0#self.current_pose.data[0]
+        dy = self.y_goal - 500.0#self.current_pose.data[1]
+        distance = math.sqrt(dx*dx + dy*dy)
+        self.get_logger().info(f"pose x {self.current_pose.data[0]}     dy: {dy}")
+        # Проверяем, достигли ли мы цели
+        if distance < self.arrival_tolerance:
+            self.get_logger().info(f"{distance}")
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
             self.stop_moving()
             self.reached = True
             self.get_logger().info('Goal reached! Stopping.')
@@ -120,7 +149,10 @@ class PoseFollower(Node):
         desired_angle = math.atan2(dy, dx)
         # Считаем угол вектора в заданной точке
         angle_error = desired_angle - self.current_pose.data[2]
+<<<<<<< HEAD
         self.get_logger().info(f"desired_angle: {desired_angle}   angle_error: {angle_error}")
+=======
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
         # Находим ошибку - разницу между углом черепахи и вектором
 
         # Нормализуем угол в диапазон [-pi, pi]. Чтобы поворачиваться в ближайшую сторону
@@ -131,6 +163,7 @@ class PoseFollower(Node):
 
         # Линейная скорость (ограничиваем сверху)
         twist.linear.x = self.linear_k * distance
+<<<<<<< HEAD
         self.get_logger().info(f"{twist.linear.x}")
         if twist.linear.x > 0.1:
             twist.linear.x = 0.1
@@ -143,6 +176,18 @@ class PoseFollower(Node):
             twist.angular.z = -0.1
         
         twist.linear.x = twist.linear.x * -1
+=======
+        if twist.linear.x > 500.0:
+            twist.linear.x = 500.0
+
+        # Угловая скорость (аналогично ограничиваем)
+        twist.angular.z = self.angular_k * angle_error
+        if twist.angular.z > 500.0:
+            twist.angular.z = 500.0
+        elif twist.angular.z < -500.0:
+            twist.angular.z = -500.0
+
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
         # Публикуем
         self.publisher_.publish(twist)
         
