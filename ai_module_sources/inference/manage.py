@@ -37,27 +37,47 @@ def scp_send_file(hostname, username, password, local_path, remote_path, port: i
         print("Connection closed.")
 
 class API:
-    def update_weights(in_path: str, out_path: str = "/"): pass
-    def board_camera_prepare(): pass
-    def start_yolo(): pass
+    def __init__(self, host: str = "10.160.209.1", username: str = "root", password: str = "root"):
+        self.host = host
+        self.username = username
+        self.password = password
+
+    def update_weights(in_path: str, out_path: str = "/root/"): pass
+    def board_camera_prepare(self):
+        ssh_execute_command(
+            hostname=self.host, 
+            username=self.username,
+            password=self.password,
+            commands=["echo 255 | /mnt/system/usr/bin/sensor_test"]
+        )
+
+    def start_yolo(self):
+        ssh_execute_command(
+            hostname=self.host, 
+            username=self.username,
+            password=self.password,
+            commands=["nohup python3 -m http.server 8088 > /dev/null 2>&1 &"]
+        )
+
     def stop_yolo(): pass
 
 if __name__ == "__main__":
-    host = "192.168.1.10"
-    username = "pi"
-    password = "pi"
-    if 0:
-        ssh_execute_command(
-            hostname=host, # 10.160.209.1
-            username=username,
-            password=password,
-            commands=["touch /home/pi/connected_an_create"]
-        )
+    # Example pipeline to start YOLO camera detection
+    api = API("192.168.1.10", "pi", "pi")
+    # api.board_camera_prepare()
+    api.start_yolo()
 
-    scp_send_file(
-        hostname=host,
-        username=username,
-        password=password,
-        local_path="/home/stephan/Downloads/bad_calib_last_dataset_fruits_model.cvimodel",
-        remote_path="/home/pi/"
-    )
+    # ssh_execute_command(
+    #     hostname=host, # 
+    #     username=username,
+    #     password=password,
+    #     commands=["touch /home/pi/connected_an_create"]
+    # )
+
+    # scp_send_file(
+    #     hostname=host,
+    #     username=username,
+    #     password=password,
+    #     local_path="/home/stephan/Downloads/bad_calib_last_dataset_fruits_model.cvimodel",
+    #     remote_path="/home/pi/"
+    # )
