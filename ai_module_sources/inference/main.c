@@ -36,7 +36,7 @@ void interrupt_handler(int signum)
     interrupted = 1;
 }
 
-CVI_S32 init_param(const cvitdl_handle_t tdl_handle)
+CVI_S32 init_param(const cvitdl_handle_t tdl_handle, int class_number)
 {
     // setup preprocess
     YoloPreParam preprocess_cfg =
@@ -61,7 +61,7 @@ CVI_S32 init_param(const cvitdl_handle_t tdl_handle)
 
     YoloAlgParam yolov8_param =
         CVI_TDL_Get_YOLO_Algparam(tdl_handle, CVI_TDL_SUPPORTED_MODEL_YOLOV8_DETECTION);
-    yolov8_param.cls = MODEL_CLASS_CNT;
+    yolov8_param.cls = class_number;
 
     printf("setup yolov8 algorithm param \n");
     ret =
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
         return ret;
     }
 
-    ret = init_param(tdl_handle);
+    ret = init_param(tdl_handle, atoi(argv[2]));
     ret = CVI_TDL_OpenModel(tdl_handle, CVI_TDL_SUPPORTED_MODEL_YOLOV8_DETECTION, argv[1]);
 
     if (ret != CVI_SUCCESS)
