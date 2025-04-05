@@ -1,13 +1,13 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int16MultiArray
+from std_msgs.msg import UInt32MultiArray
 import serial
 import re
 
 class SectorPublisher(Node):
     def __init__(self):
         super().__init__('sector_publisher')
-        self.publisher = self.create_publisher(Int16MultiArray, '/scan', 10)
+        self.publisher = self.create_publisher(UInt32MultiArray, '/scan', 10)
         self.ser = None
         self.connect_serial('/dev/ttyUSB1', 115200)
         self.timer = self.create_timer(0.1, self.read_and_publish)
@@ -29,15 +29,20 @@ class SectorPublisher(Node):
             if not line.startswith("SECTORS:"):
                 return
 
+            line = line.split(" ")
+            
             # Extract numbers after SECTORS:
-            numbers = re.findall(r'\d+', line)
+            #self.get_logger().info(" ".join(line))
+            numbers = line[1:]
+            #self.get_logger().info(" ".join(numbers))
+            numbers = [int(n) for n in numbers]
             if len(numbers) != 12:
                 self.get_logger().warn(f'Invalid sector count: {len(numbers)} in line "{line}"')
                 return
 
             values = [int(n) for n in numbers]
 
-            msg = Int16MultiArray()
+            msg = UInt32MultiArray()
             msg.data = values
             self.publisher.publish(msg)
             self.get_logger().info(f'Published: {values}')

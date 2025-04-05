@@ -170,10 +170,7 @@ int main(int argc, char *argv[])
         serv_addr.sin_port = htons(port);
         std::memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
 
-        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-        {
-            perror("Connect error");
-        }
+        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {}
         else
         {
             send(sockfd, request.c_str(), request.length(), 0);
