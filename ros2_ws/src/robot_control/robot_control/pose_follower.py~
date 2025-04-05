@@ -45,7 +45,7 @@ class PoseFollower(Node):
         self.angular_k = 4.0
 
         # Порог «прибыли» к цели
-        self.arrival_tolerance = 10.0
+        self.arrival_tolerance = 1.0
 
         # Флаги состояния
         self.reached = False
@@ -65,7 +65,7 @@ class PoseFollower(Node):
         self.x_goal = msg.data[0]
         self.y_goal = msg.data[1]
         
-        #self.get_logger().info(f"{self.x_goal}")
+        self.get_logger().info(f"{self.x_goal}")
 
         self.reached = False
         self.unreachable = False
@@ -77,7 +77,7 @@ class PoseFollower(Node):
     def pose_callback(self, msag: Float64MultiArray):
         """Сохранить текущую позу черепашки."""
         self.current_pose = msag
-        #self.get_logger().info(f"{msag}")
+        self.get_logger().info(f"{msag}")
     def control_loop(self):
         """
         Вызывается таймером каждые 0.1 сек.
@@ -91,10 +91,10 @@ class PoseFollower(Node):
         dx = self.x_goal - self.current_pose.data[0]
         dy = self.y_goal - self.current_pose.data[1]
         distance = math.sqrt(dx*dx + dy*dy)
-        #self.get_logger().info(f"dx: {dx}     dy: {dy}")
+        self.get_logger().info(f"dx: {dx}     dy: {dy}")
         # Проверяем, достигли ли мы цели
         if distance < self.arrival_tolerance:
-            #self.get_logger().info(f"{distance}")
+            self.get_logger().info(f"{distance}")
             self.stop_moving()
             self.reached = True
             self.get_logger().info('Goal reached! Stopping.')
@@ -120,7 +120,6 @@ class PoseFollower(Node):
         desired_angle = math.atan2(dy, dx)
         # Считаем угол вектора в заданной точке
         angle_error = desired_angle - self.current_pose.data[2]
-        self.get_logger().info(f"desired_angle: {desired_angle}   angle_error: {angle_error}")
         # Находим ошибку - разницу между углом черепахи и вектором
 
         # Нормализуем угол в диапазон [-pi, pi]. Чтобы поворачиваться в ближайшую сторону
@@ -131,18 +130,16 @@ class PoseFollower(Node):
 
         # Линейная скорость (ограничиваем сверху)
         twist.linear.x = self.linear_k * distance
-        self.get_logger().info(f"{twist.linear.x}")
-        if twist.linear.x > 0.1:
-            twist.linear.x = 0.1
+        if twist.linear.x > 5.0:
+            twist.linear.x = 5.0
 
         # Угловая скорость (аналогично ограничиваем)
         twist.angular.z = self.angular_k * angle_error
-        if twist.angular.z > 0.1:
-            twist.angular.z = 0.1
-        elif twist.angular.z < -0.1:
-            twist.angular.z = -0.1
-        
-        twist.linear.x = twist.linear.x * 1 / 1000.0
+        if twist.angular.z > 5.0:
+            twist.angular.z = 5.0
+        elif twist.angular.z < -5.0:
+            twist.angular.z = -5.0
+
         # Публикуем
         self.publisher_.publish(twist)
         
