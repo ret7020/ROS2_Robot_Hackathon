@@ -170,7 +170,9 @@ int main(int argc, char *argv[])
         serv_addr.sin_port = htons(port);
         std::memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
 
-        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {}
+        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+        {
+        }
         else
         {
             send(sockfd, request.c_str(), request.length(), 0);
@@ -198,65 +200,3 @@ int main(int argc, char *argv[])
 
     return ret;
 }
-
-// simple_http_server.cpp
-
-// #define PORT 8080
-
-// int main() {
-//     int server_fd, client_fd;
-//     struct sockaddr_in address;
-//     int addrlen = sizeof(address);
-
-//     // Create socket
-//     server_fd = socket(AF_INET, SOCK_STREAM, 0);
-//     if (server_fd == 0) {
-//         perror("Socket failed");
-//         return 1;
-//     }
-
-//     // Setup address struct
-//     address.sin_family = AF_INET;
-//     address.sin_addr.s_addr = INADDR_ANY;
-//     address.sin_port = htons(PORT);
-
-//     // Bind socket
-//     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-//         perror("Bind failed");
-//         return 1;
-//     }
-
-//     // Start listening
-//     if (listen(server_fd, 5) < 0) {
-//         perror("Listen failed");
-//         return 1;
-//     }
-
-//     std::cout << "Server running on http://localhost:" << PORT << std::endl;
-
-//     while (true) {
-//         client_fd = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-//         if (client_fd < 0) {
-//             perror("Accept failed");
-//             continue;
-//         }
-
-//         char buffer[1024] = {0};
-//         read(client_fd, buffer, sizeof(buffer));
-//         std::cout << "Request:\n" << buffer << std::endl;
-
-//         // Simple HTTP response
-//         std::string response =
-//             "HTTP/1.1 200 OK\r\n"
-//             "Content-Type: text/html\r\n"
-//             "Connection: close\r\n"
-//             "\r\n"
-//             "<html><body><h1>Hello from C++ HTTP Server!</h1></body></html>";
-
-//         send(client_fd, response.c_str(), response.size(), 0);
-//         close(client_fd);
-//     }
-
-//     close(server_fd);
-//     return 0;
-// }
