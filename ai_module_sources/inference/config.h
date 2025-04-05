@@ -7,8 +7,8 @@
 #define MODEL_SCALE 0.0039216
 #define MODEL_MEAN 0.0
 #define MODEL_CLASS_CNT 3
-#define MODEL_THRESH 0.7
-#define MODEL_NMS_THRESH 0.7
+#define MODEL_THRESH 0.6
+#define MODEL_NMS_THRESH 0.6
 
 #define CENTER_COLOR cv::Scalar(200, 100, 30)
 
