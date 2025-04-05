@@ -2,12 +2,28 @@ import serial
 import time
 import sys
 
+<<<<<<< HEAD
 PORT = "/dev/ttyUSB1"     # Измени на нужный порт (например, COM3 на Windows)
+=======
+<<<<<<< HEAD
+PORT = "/dev/ttyUSB1"     # Измени на нужный порт (например, COM3 на Windows)
+=======
+PORT = "/dev/ttyUSB0"     # Измени на нужный порт (например, COM3 на Windows)
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
+>>>>>>> cc73dce9704b607a804d51334c234bb02b206d16
 BAUDRATE = 115200
 TIMEOUT = 1               # В секундах
 
 def parse_distances(line: str):
+<<<<<<< HEAD
     if line.startswith("SECTORS:"):
+=======
+<<<<<<< HEAD
+    if line.startswith("SECTORS:"):
+=======
+    if line.startswith("DISTANCES:"):
+>>>>>>> fdacc2d65bbe9946c9e713eb8ad866f7cd30ba2b
+>>>>>>> cc73dce9704b607a804d51334c234bb02b206d16
         try:
             parts = line.strip().split()[1:]  # Убираем "DISTANCES:"
             distances = [float(p) for p in parts]
