@@ -1,6 +1,5 @@
 # Документация
 
-![image](https://github.com/user-attachments/assets/2a6cdaf5-0a7a-4f77-ba1d-d3b2d8c6fd4d)
 
 ## Оглавление:
 * [Драйвер для AI модуля в ROS2](https://github.com/ret7020/ROS2_Robot_Hackathon/blob/master/docs/%D0%9A%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F_AI_%D0%9C%D0%BE%D0%B4%D1%83%D0%BB%D1%8F.md)
