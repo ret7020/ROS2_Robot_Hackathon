@@ -45,6 +45,9 @@ ros2 run lichee_http_read lichee_http_read
 ]
 ```
 
+![image](https://github.com/user-attachments/assets/8d94c106-6d03-42fc-84ff-17c61a23fc90)
+
+
 ### lichee_camera
 
 ```bash
@@ -52,3 +55,7 @@ ros2 run lichee_camera lichee_camera
 ```
 
 Эта нода принимает MJPEG стрим с LicheeRV Nano камеры и конвертирует в ROS2 Image, который публикуется в топик `camera/image`. Частота публикации - 10 Hz (ограничена на стороне таймера в ROS2). Этот топик можно добавить в RVIZ для визуализации.
+
+### lichee_manage_service
+
+Это ROS2 Service, который позволяет через инфраструктуру ROS конвигурировать детектор на LicheeRV Nano.
