@@ -1,6 +1,16 @@
 import paramiko
 from scp import SCPClient
 
+
+def extract_pid(result: str):
+    lines = result.strip().split('\n')
+
+    for line in lines:
+        if line.split()[2] == "/root/fruit_det":
+            return int(line.split()[0])
+        
+    return None
+
 def ssh_execute_command(hostname, username, password, commands: list, port: int = 22):
     try:
         client = paramiko.SSHClient()
@@ -12,6 +22,8 @@ def ssh_execute_command(hostname, username, password, commands: list, port: int 
             stdin, stdout, stderr = client.exec_command(command)
             output = stdout.read().decode()
             error = stderr.read().decode()
+            return output
+            
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -56,16 +68,19 @@ class API:
             hostname=self.host, 
             username=self.username,
             password=self.password,
-            commands=["nohup python3 -m http.server 8088 > /dev/null 2>&1 &"]
+            commands=["export LD_LIBRARY_PATH=/root/libs_patch/lib:/root/libs_patch/middleware_v2:/root/libs_patch/middleware_v2_3rd:/root/libs_patch/tpu_sdk_libs:/root/libs_patch:/root/libs_patch/opencv && nohup /root/fruit_det /root/fruit_2_int8_2_class.cvimodel 3 > /dev/null 2>&1 &"]
         )
 
-    def stop_yolo(): pass
+    def stop_yolo(self, pid: int): pass
 
 if __name__ == "__main__":
     # Example pipeline to start YOLO camera detection
-    api = API("192.168.1.10", "pi", "pi")
+    api = API()
     # api.board_camera_prepare()
-    api.start_yolo()
+    # api.start_yolo()
+    pid = ssh_execute_command("10.160.209.1", "root", "root", ["ps aux | grep /root/fruit_det"])
+    pid = extract_pid(pid)
+    print(f"Pid: {pid}")
 
     # ssh_execute_command(
     #     hostname=host, # 

@@ -161,30 +161,30 @@ int main(int argc, char *argv[])
         int sockfd = socket(AF_INET, SOCK_STREAM, 0);
         if (sockfd < 0)
         {
-            perror("Socket error");
-            return 1;
-        }
-
-        sockaddr_in serv_addr{};
-        serv_addr.sin_family = AF_INET;
-        serv_addr.sin_port = htons(port);
-        std::memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-
-        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-        {
         }
         else
         {
-            send(sockfd, request.c_str(), request.length(), 0);
+            sockaddr_in serv_addr{};
+            serv_addr.sin_family = AF_INET;
+            serv_addr.sin_port = htons(port);
+            std::memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
 
-            char buffer[2048];
-            int bytes = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-            if (bytes > 0)
+            if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
             {
-                buffer[bytes] = '\0';
             }
+            else
+            {
+                send(sockfd, request.c_str(), request.length(), 0);
 
-            close(sockfd);
+                char buffer[2048];
+                int bytes = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+                if (bytes > 0)
+                {
+                    buffer[bytes] = '\0';
+                }
+
+                close(sockfd);
+            }
         }
 
         test.write(bgr);
