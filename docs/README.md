@@ -12,3 +12,6 @@
 ## Google Colab
 * [Сборка ПО под LicheeRV Nano](https://github.com/ret7020/ROS2_Robot_Hackathon/blob/master/docs/notebooks/Compile_AI_Module_Embedded_Software.ipynb)
 * [Обучение YOLO](https://github.com/ret7020/ROS2_Robot_Hackathon/blob/master/docs/notebooks/YOLO_FOR_LICHEERV_NANO.ipynb)
+
+## Дополнительно
+* [Покупка комплектующих для AI модуля](https://github.com/ret7020/ROS2_Robot_Hackathon/blob/master/docs/LicheeRV_aliexpress.xlsx)
