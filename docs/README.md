@@ -14,4 +14,5 @@
 * [Обучение YOLO](https://github.com/ret7020/ROS2_Robot_Hackathon/blob/master/docs/notebooks/YOLO_FOR_LICHEERV_NANO.ipynb)
 
 ## Дополнительно
-* [Покупка комплектующих для AI модуля](https://github.com/ret7020/ROS2_Robot_Hackathon/blob/master/docs/LicheeRV_aliexpress.xlsx)
+* [Покупка комплектующих для AI модуля](https://docs.google.com/spreadsheets/d/1wO9Ff5L60-RLxCLnrkcJx0MhK1ipCci5Y5WmbnQBABA/edit?usp=sharing)
+

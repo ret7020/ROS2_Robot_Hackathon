@@ -28,7 +28,7 @@ class MJPEGStreamProcessor(Node):
 
         stream_uri = f"http://{self.ai_module_ip.value}:{self.ai_module_mjpeg_port.value}"
 
-        self.get_logger().info(f"Usging AI module stream at: {stream_uri}")
+        self.get_logger().info(f"Using AI module video stream at: {stream_uri}")
         
         self.bridge = CvBridge()
         self.publisher = self.create_publisher(Image, 'ai_module/image', 10)
