@@ -15,7 +15,7 @@ log.setLevel(logging.ERROR)
 class HttpToRosNode(Node):
     def __init__(self):
         super().__init__('http_to_ros_node')
-        self.publisher_ = self.create_publisher(Int32MultiArray, 'detector', 10)
+        self.publisher_ = self.create_publisher(Int32MultiArray, 'ai_module/detector', 10)
 
 # Flask app
 app = Flask(__name__)
