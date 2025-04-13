@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'ai_module_detector = http_api.http_api:main'
         ],
     },
 )
