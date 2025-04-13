@@ -10,6 +10,7 @@ git clone https://github.com/ret7020/ROS2_Robot_Hackathon
 cd ROS2_Robot_Hackathon/ai_module_ros_api
 colcon build
 source install/setup.bash
+pip3 install flask opencv-python
 ros2 launch bringup ai_driver.launch.py
 ```
 
