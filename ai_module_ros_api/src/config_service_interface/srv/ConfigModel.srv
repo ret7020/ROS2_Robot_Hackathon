@@ -1,0 +1,5 @@
+string ai_module_ip
+string model_local_path
+---
+bool success
+string info

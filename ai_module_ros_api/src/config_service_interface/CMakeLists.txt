@@ -17,6 +17,7 @@ find_package(builtin_interfaces REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/ConfigBase.srv"
   "srv/ConfigArg.srv"
+  "srv/ConfigModel.srv"
   DEPENDENCIES builtin_interfaces
 )
 

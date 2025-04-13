@@ -87,6 +87,16 @@ class API:
             commands=[f"kill -2 {pid}"]
         )
 
+    def update_model(self, local_path: str):
+        scp_send_file(
+            hostname=self.host,
+            username=self.username,
+            password=self.password,
+            local_path=local_path,
+            remote_path="/root/fruit_2_int8_2_class.cvimodel"
+    )
+
+
 
 if __name__ == "__main__":
     # Example pipeline to start YOLO camera detection

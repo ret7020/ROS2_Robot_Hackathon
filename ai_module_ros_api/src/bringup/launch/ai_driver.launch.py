@@ -19,5 +19,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         stream_node,
-        detector_node
+        detector_node,
+        config_service_server
     ])

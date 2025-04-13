@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from config_service_interface.srv import ConfigBase, ConfigArg
+from config_service_interface.srv import ConfigBase, ConfigArg, ConfigModel
 from .board_manager import API as BoardManageAPI
 
 class ConfigServiceServer(Node):
@@ -31,6 +31,12 @@ class ConfigServiceServer(Node):
             ConfigArg, 
             'ai_module/yolo_stop',
             self.handle_stop_yolo
+        )
+
+        self.update_model_srv = self.create_service(
+            ConfigModel, 
+            'ai_module/update_model',
+            self.handle_update_model
         )
 
         self.board_api = BoardManageAPI()
@@ -66,6 +72,14 @@ class ConfigServiceServer(Node):
 
         response.success = True
         response.info = f'OK'
+
+    def handle_update_model(self, request, response): 
+        model_path = request.model_local_path
+
+        self.board_api.update_model(model_path)
+
+        response.success = True
+        response.info = 'OK'
 
 def main(args=None):
     rclpy.init(args=args)
